@@ -79,14 +79,14 @@ workflows:
       - build-frontend
       - build-backend
       - test-frontend:
-          require:
+          requires:
             build-frontend
       - test-backend:
-          require:
+          requires:
             build-backend
       - scan-frontend:
-          require:
+          requires:
             build-frontend
       - scan-backend:
-          require:
+          requires:
             build-backend                  
