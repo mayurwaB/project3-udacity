@@ -130,17 +130,22 @@ jobs:
       - image: python:3.7-alpine3.11 
     steps:
       - checkout
+      
       - attach_workspace: 
           at: ~/
+      
       - add_ssh_keys:
           fingerprints: ["1f:e5:f1:3d:d6:24:bc:b9:fb:94:47:9f:4e:21:3a:3b"] 
+      
       - run:
           name: Install Ansible
           command: apk add --update ansible
+      
       - run:
           name: Run Playbook and Configure server
           command: |
-            ansible-playbook project/.circleci/ansible/configure-server.yml -i project/.circleci/ansible/inventory.txt -vvv  
+            ansible-playbook ~/project/.circleci/ansible/configure-server.yml -i ~/project/.circleci/ansible/inventory.txt -vvv  
+      
       - destroy-environment         
 
 
