@@ -111,7 +111,7 @@ jobs:
           name: Saving Ansible Inventory
           command: |  
             aws ec2 describe-instances --query 'Reservations[*].Instances[*].PublicIpAddress' \
-            --filters Name=instance-state-name,Values=running --output text >> .circleci/ansible/inventory.txt
+            --filters Name=instance-state-name,Values=running --output text >> project/.circleci/ansible/inventory.txt
 
       - run:
           name: Create tar workspace dependencies
