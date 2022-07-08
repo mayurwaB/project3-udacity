@@ -164,5 +164,5 @@ workflows:
             [test-frontend, test-backend, build-frontend, build-backend]
       - configure-infrastructure:
           requires:
-            deeploy-backend-infrastructure     
+            [deploy-backend-infrastructure]     
       
