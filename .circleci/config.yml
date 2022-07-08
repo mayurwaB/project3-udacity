@@ -96,14 +96,7 @@ jobs:
             --stack-name "udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}" \
             --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"  \
             --tags project=udapeople 
-          
-      - destroy-environment   
 
-   deploy-frontend-infrastructure:
-    docker:
-      - image: amazon/aws-cli
-    steps:
-      - checkout
       - run:
           name: Ensuring Frontend Exists
           command: |
@@ -111,7 +104,42 @@ jobs:
             --template-file .circleci/files/frontend.yml \
             --stack-name "udapeople-frontend-${CIRCLE_WORKFLOW_ID:0:7}" \
             --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"  \
-            --tags project=udapeople              
+            --tags project=udapeople  
+
+      - run:   
+          name: Saving Ansible Inventory
+          command: |  
+            aws ec2 describe-instances --query 'Reservations[*].Instances[*].PublicIpAddress' \
+            --filters Name=instance-state-name,Values=running --output text >> .circleci/ansible/inventory.txt
+
+      - run:
+          name: Create tar workspace dependencies
+          command: |
+            yum install -y tar gzip      
+
+      - persist_to_workspace:
+          root: ./
+          paths:
+            - ./.circleci/ansible/inventory.txt
+
+      - destroy-environment 
+
+   configure-infrastructure:
+    docker:
+      - image: python:3.7-alpine3.11 
+    steps:
+      - checkout
+      - attach_workspace: 
+          at: ./
+      - add_ssh_keys:
+          fingerprints: ["1f:e5:f1:3d:d6:24:bc:b9:fb:94:47:9f:4e:21:3a:3b"] 
+      - run:
+          name: Install Ansible
+          command: apk add --update ansible
+      - run:
+          name: Run Playbook and Configure server
+          command: |
+            ansible-playbook ./.circleci/ansible/configure-server.yml -i ./.circleci/ansible/inventory.txt -vvv    
 
 
 workflows:
@@ -131,7 +159,10 @@ workflows:
       - scan-backend:
           requires:
             [build-backend] 
-      - deploy-backend-infrastructure
-      - deploy-frontend-infrastructure:
+      - deploy-backend-infrastructure:
           requires:
-            [deploy-backend-infrastructure]
+            [test-frontend, test-backend, build-frontend, build-backend]
+      - configure-infrastructure:
+          requires:
+            deeploy-backend-infrastructure     
+      
