@@ -56,6 +56,7 @@ jobs:
           command: |
             cd backend
             npm install
+            npm cache clean
             npm run test  
 
    scan-frontend:
