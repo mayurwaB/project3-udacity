@@ -1,6 +1,15 @@
 version: 2.1
 
+commands:
+   destroy-environment:
+     steps:
+       - run:
+           name: Destroy environment
+           when: on_fail
+           command: |
+             aws cloudformation delete-stack --stack-name udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}
 jobs:
+#tests
    build-frontend:
     docker:
       - image: circleci/node:13.8.0
@@ -73,6 +82,38 @@ jobs:
             npm install
             npm audit fix --audit-level=critical --force
 
+#deployments  
+   deploy-backend-infrastructure:
+    docker:
+      - image: amazon/aws-cli
+    steps:
+      - checkout
+      - run:
+          name: Ensuring Backend Exists
+          command: |
+            aws cloudformation deploy \
+            --template-file .circleci/files/backend.yml \
+            --stack-name "udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}" \
+            --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"  \
+            --tags project=udapeople 
+          
+      - destroy-environment   
+
+   deploy-frontend-infrastructure:
+    docker:
+      - image: amazon/aws-cli
+    steps:
+      - checkout
+      - run:
+          name: Ensuring Frontend Exists
+          command: |
+            aws cloudformation deploy \
+            --template-file .circleci/files/frontend.yml \
+            --stack-name "udapeople-frontend-${CIRCLE_WORKFLOW_ID:0:7}" \
+            --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"  \
+            --tags project=udapeople              
+
+
 workflows:
   workflow_pipeline:
     jobs:
@@ -89,4 +130,8 @@ workflows:
             [build-frontend]
       - scan-backend:
           requires:
-            [build-backend]                  
+            [build-backend] 
+      - deploy-backend-infrastructure
+      - deploy-frontend-infrastructure:
+          requires:
+            deploy-backend-infrastructure                      
