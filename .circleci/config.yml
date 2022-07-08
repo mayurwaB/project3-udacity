@@ -134,4 +134,4 @@ workflows:
       - deploy-backend-infrastructure
       - deploy-frontend-infrastructure:
           requires:
-            deploy-backend-infrastructure                      
+            [deploy-backend-infrastructure]
