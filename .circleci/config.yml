@@ -119,9 +119,9 @@ jobs:
             yum install -y tar gzip      
 
       - persist_to_workspace:
-          root: ./
+          root: ~/
           paths:
-            - ./.circleci/ansible/inventory.txt
+            - project/.circleci/ansible/inventory.txt
 
       - destroy-environment 
 
@@ -131,7 +131,7 @@ jobs:
     steps:
       - checkout
       - attach_workspace: 
-          at: ./
+          at: ~/
       - add_ssh_keys:
           fingerprints: ["1f:e5:f1:3d:d6:24:bc:b9:fb:94:47:9f:4e:21:3a:3b"] 
       - run:
@@ -140,7 +140,7 @@ jobs:
       - run:
           name: Run Playbook and Configure server
           command: |
-            ansible-playbook ./.circleci/ansible/configure-server.yml -i ./.circleci/ansible/inventory.txt -vvv    
+            ansible-playbook project/.circleci/ansible/configure-server.yml -i project/.circleci/ansible/inventory.txt -vvv    
 
 
 workflows:
