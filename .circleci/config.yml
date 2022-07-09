@@ -201,7 +201,7 @@ jobs:
 workflows:
   workflow_pipeline:
     jobs:
-      deploy-frontend
+      - deploy-frontend
       # - run-migrations
       # - build-frontend
       # - build-backend
