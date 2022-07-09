@@ -166,6 +166,7 @@ jobs:
             if grep -q "has been executed successfully." ~/project/backend/migrations_dump.txt
             then
             curl https://kvdb.io/NDVzABNZEkHciyxyxJkDKs/migration_${RANDOM}  -d '1'  
+            else echo "Error"
             fi         
 
 
