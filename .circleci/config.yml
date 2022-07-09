@@ -15,6 +15,23 @@ commands:
             aws cloudformation delete-stack --stack-name udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}
             aws cloudformation delete-stack --stack-name udapeople-frontend-${CIRCLE_WORKFLOW_ID:0:7}
 
+  create-env-file:
+    description: Create env file and persist
+    steps:
+      - run:
+          name: Add env vars to .env file
+          command: |
+            echo MY_ENV=$MY_ENV > "./backend/.env"
+            echo TYPEORM_CONNECTION=$TYPEORM_CONNECTION >> "./backend/.env"
+            echo TYPEORM_MIGRATIONS_DIR=$TYPEORM_MIGRATIONS_DIR >> "./backend/.env"
+            echo TYPEORM_ENTITIES=$TYPEORM_ENTITIES >> "./backend/.env"
+            echo TYPEORM_MIGRATIONS=$TYPEORM_MIGRATIONS >> "./backend/.env"
+            echo TYPEORM_HOST=$TYPEORM_HOST >> "./backend/.env"
+            echo TYPEORM_PORT=$TYPEORM_PORT >> "./backend/.env"
+            echo TYPEORM_USERNAME=$TYPEORM_USERNAME >> "./backend/.env"
+            echo TYPEORM_PASSWORD=$TYPEORM_PASSWORD >> "./backend/.env"
+            echo TYPEORM_DATABASE=$TYPEORM_DATABASE >> "./backend/.env"
+
   revert-migrations:
     description: Revert the last migration
     parameters:
@@ -134,6 +151,8 @@ jobs:
             --stack-name "udapeople-frontend-${CIRCLE_WORKFLOW_ID:0:7}" \
             --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"  \
             --tags project=udapeople  
+     
+      - create-env-file
 
       - run:   
           name: Saving Ansible Inventory
@@ -172,6 +191,8 @@ jobs:
             python3 -m pip install awscli
             apk add --update ansible
       
+      - create-env-file
+
       - run:
           name: Run Playbook and Configure server
           command: |
@@ -185,6 +206,9 @@ jobs:
       - image: circleci/node:13.8.0
     steps:
       - checkout
+      - attach_workspace: 
+          at: .
+      - create-env-file
       - run:
           name: Running Migrations
           command: |
@@ -248,6 +272,7 @@ jobs:
             apk add --update nodejs npm
             apk add tar gzip
             python3 -m pip install awscli
+      - create-env-file      
       - run:
           name: Deploy backend objects
           command: |
@@ -268,6 +293,8 @@ jobs:
       - image: python:3.7-alpine3.11  
     steps:
       - checkout
+      - attach_workspace: 
+          at: .
       - run:
           name: Smoke test dependencies
           command: |   
@@ -275,6 +302,7 @@ jobs:
             apk add curl
             apk add tar gzip
             python3 -m pip install awscli 
+      - create-env-file    
       - run:
           name: Backend Smoke Test
           command: |
@@ -348,26 +376,26 @@ jobs:
 workflows:
   workflow_pipeline:
     jobs:
-      # - build-frontend
-      # - build-backend
-      # - test-frontend:
-      #     requires:
-      #       [build-frontend]
-      # - test-backend:
-      #     requires:
-      #       [build-backend]
-      # - scan-frontend:
-      #     requires:
-      #       [build-frontend]
-      # - scan-backend:
-      #     requires:
-      #       [build-backend] 
+      - build-frontend
+      - build-backend
+      - test-frontend:
+          requires:
+            [build-frontend]
+      - test-backend:
+          requires:
+            [build-backend]
+      - scan-frontend:
+          requires:
+            [build-frontend]
+      - scan-backend:
+          requires:
+            [build-backend] 
       - deploy-infrastructure
-          # requires:
-          #   [test-frontend, test-backend, build-frontend, build-backend]
-          # filters:
-          #   branches:
-          #     only: [test-feature-branch]
+          requires:
+            [test-frontend, test-backend, build-frontend, build-backend]
+          filters:
+            branches:
+              only: [master]
       - configure-infrastructure:
           requires:
             [deploy-infrastructure] 
