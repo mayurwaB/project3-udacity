@@ -33,4 +33,4 @@
         state: latest
 
   roles:
-    - configure-server
+    - { role: serverconfig }
