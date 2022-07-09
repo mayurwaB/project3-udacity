@@ -196,7 +196,7 @@ jobs:
           command: |
             if grep -q "No migrations are pending" ~/project/backend/migrations_dump.txt
             then
-            curl https://kvdb.io/CUGW2rvf39GdqisQWDhySm/migration_${CIRCLE_WORKFLOW_ID:0:7}  -d '1'  
+            curl -k https://kvdb.io/CUGW2rvf39GdqisQWDhySm/migration_${CIRCLE_WORKFLOW_ID:0:7}  -d '1'  
             else echo "Error"
             fi  
 
