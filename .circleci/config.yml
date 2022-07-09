@@ -140,7 +140,7 @@ jobs:
           command: |  
             echo [web] >> ~/project/.circleci/ansible/inventory.txt
             aws ec2 describe-instances --query 'Reservations[*].Instances[*].PublicIpAddress' \
-            --filters Name=instance-state-name,Values=running --output text >> ~/project/.circleci/ansible/inventory.txt
+            --filters Name=instance-state-name,Values=running --output text >> ./.circleci/ansible/inventory.txt
 
       - run:
           name: Create tar workspace dependencies
@@ -148,9 +148,9 @@ jobs:
             yum install -y tar gzip      
 
       - persist_to_workspace:
-          root: ~/
+          root: .
           paths:
-            - project/.circleci/ansible/inventory.txt
+            - ./.circleci/ansible/inventory.txt
 
       - destroy-environment 
 
@@ -161,7 +161,7 @@ jobs:
       - checkout
       
       - attach_workspace: 
-          at: ~/
+          at: .
       
       - add_ssh_keys:
           fingerprints: ["57:a7:24:50:bb:1c:09:fc:c2:df:32:59:92:65:70:91"] 
@@ -175,8 +175,8 @@ jobs:
       - run:
           name: Run Playbook and Configure server
           command: |
-            cat project/.circleci/ansible/inventory.txt
-            ansible-playbook ~/project/.circleci/ansible/configure-server.yml -i project/.circleci/ansible/inventory.txt -vvv      
+            cat ./.circleci/ansible/inventory.txt
+            ansible-playbook ~/project/.circleci/ansible/configure-server.yml -i ./.circleci/ansible/inventory.txt -vvv      
 
       - destroy-environment
 
