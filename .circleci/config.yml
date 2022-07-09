@@ -27,7 +27,7 @@ commands:
           when: on_fail
           command: |
               # kvdb.io GET URL code goes here
-              SUCCESS=$(curl --insecure  https://kvdb.io/9GE4jRtKznmVKRfvdBABBe/migration_<< parameters.workflow_id >>)
+              SUCCESS=$(curl --insecure  https://kvdb.io/NDVzABNZEkHciyxyxJkDKs/migration_<< parameters.workflow_id >>)
               # Logic for reverting the database state
               if (( $SUCCESS == 1 ));
               then
@@ -138,7 +138,7 @@ jobs:
       - run:   
           name: Saving Ansible Inventory
           command: |  
-            echo [web] >> inventory
+            echo [web] >> ~/project/.circleci/ansible/inventory.txt
             aws ec2 describe-instances --query 'Reservations[*].Instances[*].PublicIpAddress' \
             --filters Name=instance-state-name,Values=running --output text >> ~/project/.circleci/ansible/inventory.txt
 
@@ -152,7 +152,7 @@ jobs:
           paths:
             - project/.circleci/ansible/inventory.txt
 
-      #- destroy-environment 
+      - destroy-environment 
 
    configure-infrastructure:
     docker:
@@ -175,7 +175,7 @@ jobs:
       - run:
           name: Run Playbook and Configure server
           command: |
-            cat inventory
+            cat ~/project/.circleci/ansible/inventory.txt
             ansible-playbook ~/project/.circleci/ansible/configure-server.yml -i ~/project/.circleci/ansible/inventory.txt -vvv      
 
       - destroy-environment
