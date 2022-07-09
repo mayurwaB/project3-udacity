@@ -16,9 +16,9 @@
         timeout: 20
 
     - name: "install dependencies."
-        apt:
-          name: python3
-          state: latest
+      apt:
+        name: python3
+        state: latest
 
 
   # Get the environment variables from CircleCI and add to the EC2 instance
