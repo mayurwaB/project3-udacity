@@ -27,7 +27,7 @@ commands:
           when: on_fail
           command: |
               # kvdb.io GET URL code goes here
-              SUCCESS=$(curl --insecure  https://kvdb.io/NDVzABNZEkHciyxyxJkDKs/migration_<< parameters.workflow_id >>)
+              SUCCESS=$(curl --insecure  https://kvdb.io/CUGW2rvf39GdqisQWDhySm/migration_<< parameters.workflow_id >>)
               # Logic for reverting the database state
               if (( $SUCCESS == 1 ));
               then
@@ -175,8 +175,8 @@ jobs:
       - run:
           name: Run Playbook and Configure server
           command: |
-            cat ~/project/.circleci/ansible/inventory.txt
-            ansible-playbook ~/project/.circleci/ansible/configure-server.yml -i ~/project/.circleci/ansible/inventory.txt -vvv      
+            cat project/.circleci/ansible/inventory.txt
+            ansible-playbook ~/project/.circleci/ansible/configure-server.yml -i project/.circleci/ansible/inventory.txt -vvv      
 
       - destroy-environment
 
@@ -196,7 +196,7 @@ jobs:
           command: |
             if grep -q "No migrations are pending" ~/project/backend/migrations_dump.txt
             then
-            curl -k https://kvdb.io/NDVzABNZEkHciyxyxJkDKs/migration_${CIRCLE_WORKFLOW_ID:0:7}  -d '1'  
+            curl https://kvdb.io/CUGW2rvf39GdqisQWDhySm/migration_${CIRCLE_WORKFLOW_ID:0:7}  -d '1'  
             else echo "Error"
             fi  
 
