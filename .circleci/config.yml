@@ -178,7 +178,7 @@ jobs:
           name: Install Dependencies
           command: |
             yum install -y curl
-            curl -sL https://rpm.nodesource.com/setup_14.x | sudo bash -
+            curl -sL https://rpm.nodesource.com/setup_14.x | bash -
             yum install -y tar gzip
       - run:
           name: Export Variables
