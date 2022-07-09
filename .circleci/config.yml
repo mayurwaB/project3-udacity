@@ -329,15 +329,15 @@ jobs:
       - run:
           name: Remove Stacks and S3 bucket that match OldWorkflow
           command: |
-              if [[ "${CIRCLE_WORKFLOW_ID:0:7}" =~ "${OldWorkflowID}" ]]
-              then
-                echo "${OldWorkflowID} is up-to-date. Nothing to do here"
-              else
-                echo "Attempting to remove residual files with ID: ${OldWorkflowID}"
-                aws s3 rm "s3://udapeople-${OldWorkflowID}" --recursive
-                aws cloudformation delete-stack --stack-name "udapeople-backend-${OldWorkflowID}"
-                aws cloudformation delete-stack --stack-name "udapeople-frontend-${OldWorkflowID}"
-              fi              
+            if [[ "${CIRCLE_WORKFLOW_ID:0:7}" =~ "${OldWorkflowID}" ]]
+            then
+              echo "${OldWorkflowID} is up-to-date. Nothing to do here"
+            else
+              echo "Attempting to remove residual files with ID: ${OldWorkflowID}"
+              aws s3 rm "s3://udapeople-${OldWorkflowID}" --recursive
+              aws cloudformation delete-stack --stack-name "udapeople-backend-${OldWorkflowID}"
+              aws cloudformation delete-stack --stack-name "udapeople-frontend-${OldWorkflowID}"
+            fi              
 
       
 
