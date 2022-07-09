@@ -308,10 +308,10 @@ jobs:
           name: cloudfront update
           command: |   
             aws cloudformation deploy \
-          --template-file .circleci/files/cloudfront.yml \
-          --stack-name InitialStack \
-          --parameter-overrides WorkflowID="udapeople-${CIRCLE_WORKFLOW_ID:0:7}" \
-          --tags project=udapeople
+            --template-file .circleci/files/cloudfront.yml \
+            --stack-name InitialStack \
+            --parameter-overrides WorkflowID="udapeople-${CIRCLE_WORKFLOW_ID:0:7}" \
+            --tags project=udapeople
 
    cleanup:
     docker:
