@@ -342,7 +342,7 @@ jobs:
             aws cloudformation deploy \
             --template-file .circleci/files/cloudfront.yml \
             --stack-name InitialStack \
-            --parameter-overrides WorkflowID="udapeople-${CIRCLE_WORKFLOW_ID:0:7}" \
+            --parameter-overrides WorkflowID="${CIRCLE_WORKFLOW_ID:0:7}" \
             --tags project=udapeople
 
    cleanup:
@@ -371,8 +371,6 @@ jobs:
               aws cloudformation delete-stack --stack-name "udapeople-frontend-${OldWorkflowID}"
             fi              
 
-      
-
 workflows:
   workflow_pipeline:
     jobs:
@@ -392,7 +390,7 @@ workflows:
             [build-backend] 
       - deploy-infrastructure:
           requires:
-            [test-frontend, test-backend, build-frontend, build-backend]
+            [test-frontend, test-backend, scan-frontend, scan-backend]
           filters:
             branches:
               only: [master]
@@ -410,7 +408,7 @@ workflows:
             [deploy-frontend]                 
       - smoke-test:
           requires:
-            [deploy-backend]
+            [deploy-backend, deploy-frontend]
       - cloudfront-update:
           requires:
             [smoke-test]
