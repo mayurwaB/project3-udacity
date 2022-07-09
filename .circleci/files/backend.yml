@@ -12,10 +12,10 @@ Resources:
     Properties:
       InstanceType: t3.micro
       SecurityGroupIds:
-        - sg-0a9c371825823cffb
-      SubnetId: 'subnet-063eb3c06eb4051d2'
-      KeyName: aws-test-key 
-      ImageId: ami-052efd3df9dad4825
+        - 'sg-097425e58e468af39'
+      SubnetId: 'subnet-02f0fdefd08e4aa7b'
+      KeyName: sample_key_ansible 
+      ImageId: 'ami-08d4ac5b634553e16'
       Tags:
         - Key: Name
           Value: !Sub backend-${ID}
