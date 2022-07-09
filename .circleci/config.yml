@@ -393,9 +393,9 @@ workflows:
       - deploy-infrastructure
           requires:
             [test-frontend, test-backend, build-frontend, build-backend]
-          filters:
-            branches:
-              only: [master]
+            filters:
+              branches:
+                only: [master]
       - configure-infrastructure:
           requires:
             [deploy-infrastructure] 
