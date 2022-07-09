@@ -125,7 +125,7 @@ jobs:
           paths:
             - inventory
 
-      - destroy-environment 
+      #- destroy-environment 
 
    configure-infrastructure:
     docker:
@@ -185,7 +185,7 @@ jobs:
           name: Export Variables
           command: |  
             export BACKEND_IP=$(aws ec2 describe-instances --query 'Reservations[*].Instances[*].PublicIpAddress' \
-            --filters Name=instance-state-name,Values=running --output text >> inventory)
+            --filters Name=instance-state-name,Values=running --output text)
             export API_URL="http://${BACKEND_IP}:3030"
             echo "API_URL = ${API_URL}"
             echo API_URL="http://${BACKEND_IP}:3030" >> frontend/.env
@@ -199,7 +199,7 @@ jobs:
             npm install
             npm run build
             tar -czvf artifact-"${CIRCLE_WORKFLOW_ID:0:7}".tar.gz dist
-            aws s3 cp dist s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7} --recursive
+            aws s3 cp dist s3://udapeople-96f79f9 --recursive
 
       - destroy-environment     
 
