@@ -27,18 +27,12 @@
     src: /root/project/artifact.tar.gz
     dest: /home/ubuntu
 
-- name: Build backend
+- name: "Build artifact"
   ignore_errors: yes
   shell: |
     cd /home/ubuntu/artifact
     npm i
     npm run build
-
-- name: Stop and delete already running server
-  ignore_errors: yes
-  shell: |
-    pm2 stop artifact
-    pm2 delete artifact
 
 - name: Start server
   become: true
