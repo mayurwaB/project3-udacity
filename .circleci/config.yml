@@ -161,19 +161,48 @@ jobs:
             npm install 
             npm run migrations > migrations_dump.txt
       - run:
-          name: sending migration staatus to kvdb.io     
+          name: sending migration status to kvdb.io     
           command: |
             if grep -q "No migrations are pending" ~/project/backend/migrations_dump.txt
             then
             curl -k https://kvdb.io/NDVzABNZEkHciyxyxJkDKs/migration_${RANDOM}  -d '1'  
             else echo "Error"
-            fi         
+            fi  
 
+   deploy-frontend:
+    docker: 
+      - image: amazon/aws-cli
+    steps:
+      - checkout
+      - run:
+          name: Install Dependencies
+          command: |
+            yum install -y curl
+            curl -sL https://rpm.nodesource.com/setup_14.x | sudo bash -
+            yum install -y tar gzip
+      - run:
+          name: Export Variables
+          command: |  
+            export BACKEND_IP=$(aws ec2 describe-instances --query 'Reservations[*].Instances[*].PublicIpAddress' \
+            --filters Name=instance-state-name,Values=running --output text >> inventory)
+            export API_URL="http://${BACKEND_IP}:3030"
+            echo "API_URL = ${API_URL}"
+            echo API_URL="http://${BACKEND_IP}:3030" >> frontend/.env
+            cat frontend/.env
+      - run:
+          name: Deploy frontend objects
+          command: |
+            cd frontend
+            npm install
+            npm run build
+            tar -czvf artifact-"${CIRCLE_WORKFLOW_ID:0:7}".tar.gz dist
+            aws s3 cp dist s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7} --recursive
 
 workflows:
   workflow_pipeline:
     jobs:
-      - run-migrations
+      deploy-frontend
+      # - run-migrations
       # - build-frontend
       # - build-backend
       # - test-frontend:
