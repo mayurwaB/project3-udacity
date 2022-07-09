@@ -153,6 +153,7 @@ jobs:
 
 
 
+
 workflows:
   workflow_pipeline:
     jobs:
@@ -173,7 +174,7 @@ workflows:
       - deploy-backend-infrastructure
           # requires:
           #   [test-frontend, test-backend, build-frontend, build-backend]
-      - configure-infrastructure:
-          requires:
-            [deploy-backend-infrastructure]     
+      # - configure-infrastructure:
+      #     requires:
+      #       [deploy-backend-infrastructure]     
       
