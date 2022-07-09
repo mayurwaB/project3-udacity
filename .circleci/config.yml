@@ -258,8 +258,8 @@ jobs:
             # Zip the directory
             tar -C backend -czvf artifact.tar.gz .
             echo "Contents  of the inventory.txt file is -------"
-            cat ./circleci/ansible/inventory.txt
-            ansible-playbook -i ./circleci/ansible/inventory.txt deploy-backend.yml -vvv
+            cat ./.circleci/ansible/inventory.txt
+            ansible-playbook -i ./.circleci/ansible/inventory.txt ./.circleci/ansible/deploy-backend.yml -vvv
       
       - destroy-environment   
 
