@@ -155,23 +155,23 @@ jobs:
 workflows:
   workflow_pipeline:
     jobs:
-      - build-frontend
-      - build-backend
-      - test-frontend:
-          requires:
-            [build-frontend]
-      - test-backend:
-          requires:
-            [build-backend]
-      - scan-frontend:
-          requires:
-            [build-frontend]
-      - scan-backend:
-          requires:
-            [build-backend] 
-      - deploy-backend-infrastructure:
-          requires:
-            [test-frontend, test-backend, build-frontend, build-backend]
+      # - build-frontend
+      # - build-backend
+      # - test-frontend:
+      #     requires:
+      #       [build-frontend]
+      # - test-backend:
+      #     requires:
+      #       [build-backend]
+      # - scan-frontend:
+      #     requires:
+      #       [build-frontend]
+      # - scan-backend:
+      #     requires:
+      #       [build-backend] 
+      - deploy-backend-infrastructure
+          # requires:
+          #   [test-frontend, test-backend, build-frontend, build-backend]
       - configure-infrastructure:
           requires:
             [deploy-backend-infrastructure]     
