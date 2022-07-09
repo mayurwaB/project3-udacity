@@ -163,11 +163,11 @@ jobs:
       - run:
           name: sending migration staatus to kvdb.io     
           command: |
-            cat ~/project/backend/migrations_dump.txt
-            # then
-            # curl https://kvdb.io/NDVzABNZEkHciyxyxJkDKs/migration_${RANDOM}  -d '1'  
-            # else grep -q "has been executed successfully." ~/project/backend/migrations_dump.txt
-            # fi         
+            if grep -q "No migrations are pending" ~/project/backend/migrations_dump.txt
+            then
+            curl https://kvdb.io/NDVzABNZEkHciyxyxJkDKs/migration_${RANDOM}  -d '1'  
+            else echo "Error"
+            fi         
 
 
 workflows:
