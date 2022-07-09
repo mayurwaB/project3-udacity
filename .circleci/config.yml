@@ -4,7 +4,8 @@ commands:
   destroy-environment:
     parameters:
       workflow_id:
-        type: string 
+        type: string
+        default: $CIRCLE_WORKFLOW_ID
     steps:
       - run:
           name: Destroy environment
@@ -16,23 +17,24 @@ commands:
 
   revert-migrations:
     description: Revert the last migration
-      parameters:
-        workflow_id:
-          type: string      
-      steps:
-        - run:
-            name: Revert migrations
-            when: on_fail
-            command: |
-                # kvdb.io GET URL code goes here
-                SUCCESS=$(curl --insecure  https://kvdb.io/9GE4jRtKznmVKRfvdBABBe/migration_<< parameters.workflow_id >>)
-                # Logic for reverting the database state
-                if (( $SUCCESS == 1 ));
-                then
-                    cd ~/project/backend
-                    npm install
-                    npm run migration:revert
-                fi             
+    parameters:
+      workflow_id:
+        type: string
+        default: $CIRCLE_WORKFLOW_ID      
+    steps:
+      - run:
+          name: Revert migrations
+          when: on_fail
+          command: |
+              # kvdb.io GET URL code goes here
+              SUCCESS=$(curl --insecure  https://kvdb.io/9GE4jRtKznmVKRfvdBABBe/migration_<< parameters.workflow_id >>)
+              # Logic for reverting the database state
+              if (( $SUCCESS == 1 ));
+              then
+                  cd ~/project/backend
+                  npm install
+                  npm run migration:revert
+            fi             
 
 jobs:
 #tests
