@@ -370,6 +370,7 @@ jobs:
       - run:
           name: Remove Stacks and S3 bucket that match OldWorkflow
           command: |
+            export OldWorkflowID="randomstring234"
             echo ${OldWorkflowID}
             if [[ "${CIRCLE_WORKFLOW_ID:0:7}" != "${OldWorkflowID}" ]]
             then
