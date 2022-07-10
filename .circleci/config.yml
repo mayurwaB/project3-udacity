@@ -55,6 +55,16 @@ commands:
 
 jobs:
 #tests
+   host_variable:
+    docker:
+      - image: python3.7:alpine-latest
+    steps:
+      - checkout
+      - run:
+          name: View Host Variable
+          command: |
+            echo ${TYPEFORM_HOST}
+
    build-frontend:
     docker:
       - image: circleci/node:13.8.0
@@ -341,7 +351,7 @@ jobs:
           command: |   
             aws cloudformation deploy \
             --template-file .circleci/files/cloudfront.yml \
-            --stack-name InitialStack \
+            --stack-name NewStack \
             --parameter-overrides WorkflowID="${CIRCLE_WORKFLOW_ID:0:7}" \
             --tags project=udapeople
 
@@ -377,6 +387,7 @@ jobs:
 workflows:
   workflow_pipeline:
     jobs:
+      - host_variable
       - build-frontend
       - build-backend
       - test-frontend:
