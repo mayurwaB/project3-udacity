@@ -23,7 +23,7 @@
     - TYPEORM_MIGRATIONS_DIR: "{{ lookup('env', 'TYPEORM_MIGRATIONS_DIR')}}"
 
   pre_tasks:
-    - name: "wait 600 seconds for target connection to become reachable/usable."
+    - name: "wait 10 seconds for target connection to become reachable/usable."
       ansible.builtin.wait_for_connection:
         timeout: 10
 
