@@ -57,7 +57,7 @@ jobs:
 #tests
    host_variable:
     docker:
-      - image: python3.7:alpine-latest
+      - image: python:3.7-alpine3.11
     steps:
       - checkout
       - run:
