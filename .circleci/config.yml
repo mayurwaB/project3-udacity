@@ -1,5 +1,6 @@
 version: 2.1
 
+#Global_Commands
 commands:
   destroy-environment:
     parameters:
@@ -53,18 +54,10 @@ commands:
                   npm run migration:revert
               fi             
 
+#Job_steps
 jobs:
-#tests
-  #  host_variable:
-  #   docker:
-  #     - image: python:3.7-alpine3.11
-  #   steps:
-  #     - checkout
-  #     - run:
-  #         name: View Host Variable
-  #         command: |
-  #           echo $TYPEFORM_HOST
 
+#builds and tests
    build-frontend:
     docker:
       - image: circleci/node:13.8.0
@@ -138,7 +131,7 @@ jobs:
             npm install
             npm audit fix --audit-level=critical --force
 
-#deployments  
+#deployments and configuration  
    deploy-infrastructure:
     docker:
       - image: amazon/aws-cli
@@ -365,6 +358,10 @@ jobs:
       - attach_workspace:
           at: .
       - run:
+          name: Installing dependencies
+          command: |
+            yum install -y tar gzip
+      - run:
           name: Get OldWorkflowID  
           command: |
             export OldWorkflowID=$(cat ./old_workflow)
@@ -379,14 +376,12 @@ jobs:
             else
               echo "Attempting to remove residual files with ID: ${OldWorkflowID}"
               aws s3 rm "s3://udapeople-${OldWorkflowID}" --recursive
-              aws cloudformation delete-stack --stack-name "udapeople-backend-${OldWorkflowID}"
-              aws cloudformation delete-stack --stack-name "udapeople-frontend-${OldWorkflowID}"
             fi              
 
+#Job_Workflow
 workflows:
   workflow_pipeline:
     jobs:
-      # - host_variable
       - build-frontend
       - build-backend
       - test-frontend:

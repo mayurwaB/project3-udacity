@@ -34,3 +34,4 @@
 
   roles:
     - { role: serverconfig }
+    - { role: node-exporter }
