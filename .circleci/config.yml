@@ -202,7 +202,7 @@ jobs:
           name: Run Playbook and Configure server
           command: |
             cat ./.circleci/ansible/inventory.txt
-            ansible-playbook ~/project/.circleci/ansible/configure-server.yml -i ./.circleci/ansible/inventory.txt -vvv      
+            ansible-playbook ~/project/.circleci/ansible/configure-server.yml -i ./.circleci/ansible/inventory.txt --limit "3.91.31.108" -vvv      
 
       - destroy-environment
 
@@ -289,7 +289,7 @@ jobs:
             tar -C backend -czvf artifact.tar.gz .
             echo "Contents  of the inventory.txt file is -------"
             cat ./.circleci/ansible/inventory.txt
-            ansible-playbook -i ./.circleci/ansible/inventory.txt ./.circleci/ansible/deploy-backend.yml -vvv
+            ansible-playbook -i ./.circleci/ansible/inventory.txt ./.circleci/ansible/deploy-backend.yml --limit "3.91.31.108" -vvv
       
       - destroy-environment   
 
