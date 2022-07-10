@@ -63,7 +63,7 @@ jobs:
       - run:
           name: View Host Variable
           command: |
-            echo ${TYPEFORM_HOST}
+            echo $TYPEFORM_HOST
 
    build-frontend:
     docker:
