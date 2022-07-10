@@ -370,10 +370,11 @@ jobs:
       - run:
           name: Remove Stacks and S3 bucket that match OldWorkflow
           command: |
+            echo ${OldWorkflowID}
             if [[ "${CIRCLE_WORKFLOW_ID:0:7}" != "${OldWorkflowID}" ]]
             then
               echo "Attempting to remove residual files with ID: ${OldWorkflowID}"
-              aws s3 rm "s3://udapeople-${OldWorkflowID}" --recursive
+              aws s3 rb s3://udapeople-${OldWorkflowID} --force
             else
               echo "----------------Nothing to do here--------------------"
             fi              
