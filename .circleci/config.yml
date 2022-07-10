@@ -167,6 +167,7 @@ jobs:
       - run:   
           name: Saving Ansible Inventory
           command: |  
+            aws cloudformation list-exports --query 'Exports[*].Value' --output text > ./old_workflow
             echo [web] >> ~/project/.circleci/ansible/inventory.txt
             aws ec2 describe-instances --query 'Reservations[*].Instances[*].PublicIpAddress' \
             --filters Name=instance-state-name,Values=running --output text >> ./.circleci/ansible/inventory.txt
@@ -180,6 +181,7 @@ jobs:
           root: .
           paths:
             - ./.circleci/ansible/inventory.txt
+            - ./old_workflow
 
       - destroy-environment 
 
@@ -351,7 +353,7 @@ jobs:
           command: |   
             aws cloudformation deploy \
             --template-file .circleci/files/cloudfront.yml \
-            --stack-name NewStack \
+            --stack-name InitialStack \
             --parameter-overrides WorkflowID="${CIRCLE_WORKFLOW_ID:0:7}" \
             --tags project=udapeople
 
@@ -360,17 +362,14 @@ jobs:
       - image: amazon/aws-cli
     steps:
       - checkout
+      - attach_workspace:
+          at: .
       - run:
           name: Get OldWorkflowID  
           command: |
-            export OldWorkflowID=$(aws cloudformation \
-            list-exports --query "Exports[?Name==\`WorkflowID\`].Value" \
-            --no-paginate --output text)
+            export OldWorkflowID=$(cat ./old_workflow)
             echo OldWorkflowID: "${OldWorkflowID}"
-            echo CIRCLE_WORKFLOW_ID "${CIRCLE_WORKFLOW_ID:0:7}"
-            export STACKS=($(aws cloudformation list-stacks --query "StackSummaries[*].StackName" \
-            --stack-status-filter CREATE_COMPLETE --no-paginate --output text)) 
-            echo Stack names: "${STACKS[@]}"  
+            echo CIRCLE_WORKFLOW_ID "${CIRCLE_WORKFLOW_ID:0:7}"  
       - run:
           name: Remove Stacks and S3 bucket that match OldWorkflow
           command: |
