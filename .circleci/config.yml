@@ -10,9 +10,8 @@ commands:
     steps:
       - run:
           name: Destroy environment
-          # when: on_fail
+          when: on_fail
           command: |
-            echo << parameters.workflow_id >>
             # echo "Destroying environment: << parameters.workflow_id >>"
             # aws cloudformation delete-stack --stack-name udapeople-backend-<< parameters.workflow_id >>
             # aws cloudformation delete-stack --stack-name udapeople-frontend-<< parameters.workflow_id >>
@@ -64,7 +63,6 @@ jobs:
       - image: circleci/node:13.8.0
     steps:
       - checkout
-      - destroy-environment
       - run:
           name: Build front-end
           command: |
