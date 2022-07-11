@@ -10,7 +10,7 @@ commands:
     steps:
       - run:
           name: Destroy environment
-          when: on_fail
+          # when: on_fail
           command: |
             echo << parameters.workflow_id >>
             # echo "Destroying environment: << parameters.workflow_id >>"
